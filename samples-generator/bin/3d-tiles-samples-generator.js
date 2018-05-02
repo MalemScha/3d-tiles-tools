@@ -229,6 +229,9 @@ var promises = [
     createPointCloudBatched(),
     createPointCloudWithPerPointProperties(),
     createPointCloudWithTransform(),
+    createPointCloudDraco(),
+    createPointCloudDracoPartial(),
+    createPointCloudDracoBatched(),
     // Instanced
     createInstancedWithBatchTable(),
     createInstancedWithoutBatchTable(),
@@ -601,6 +604,40 @@ function createPointCloudWithTransform() {
     return savePointCloudTileset('PointCloudWithTransform', tileOptions, tilesetOptions);
 }
 
+function createPointCloudDraco() {
+    var tileOptions = {
+        colorMode : 'rgb',
+        shape : 'sphere',
+        generateNormals : true,
+        perPointProperties : true,
+        draco : true
+    };
+    return savePointCloudTileset('PointCloudDraco', tileOptions);
+}
+
+function createPointCloudDracoPartial() {
+    var tileOptions = {
+        colorMode : 'rgb',
+        shape : 'sphere',
+        generateNormals : true,
+        perPointProperties : true,
+        draco : true,
+        dracoSemantics : ['POSITION']
+    };
+    return savePointCloudTileset('PointCloudDracoPartial', tileOptions);
+}
+
+function createPointCloudDracoBatched() {
+    var tileOptions = {
+        colorMode : 'rgb',
+        shape : 'sphere',
+        generateNormals : true,
+        batched : true,
+        draco : true
+    };
+    return savePointCloudTileset('PointCloudDracoBatched', tileOptions);
+}
+
 function createInstancedWithBatchTable() {
     var tileOptions = {
         createBatchTable : true
@@ -941,11 +978,14 @@ function savePointCloudTileset(tilesetName, tileOptions, tilesetOptions) {
     var result = createPointCloudTile(tileOptions);
     var pnts = result.pnts;
     var batchTableJson = result.batchTableJson;
+    var extensionsUsed = result.extensionsUsed;
 
     tilesetOptions = defaultValue(tilesetOptions, {});
     tilesetOptions.tileName = tileName;
     tilesetOptions.properties = getProperties(batchTableJson);
     tilesetOptions.geometricError = pointCloudGeometricError;
+    tilesetOptions.extensionsUsed = extensionsUsed;
+    tilesetOptions.extensionsRequired = extensionsUsed;
     if (!defined(tilesetOptions.region) && !defined(tilesetOptions.sphere) && !defined(tilesetOptions.box)) {
         tilesetOptions.sphere = pointCloudSphere;
     }
